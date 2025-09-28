@@ -1,0 +1,165 @@
+{
+  "datasets": [
+    {
+      "name": "6a7641c2",
+      "displayName": "Recent Monthly Financial Aggregates",
+      "queryLines": [
+        "SELECT sum(Amount) FROM workspace.default.financialssilver\r\n",
+        "WHERE Date >= current_date() - INTERVAL 30 DAY;"
+      ]
+    },
+    {
+      "name": "acaae497",
+      "displayName": "Thirty Day Spend Totals by Financial Category",
+      "queryLines": [
+        "SELECT Category,\r\n",
+        "       SUM(Amount) as total_spend\r\n",
+        "FROM workspace.default.financialssilver\r\n",
+        "WHERE Date >= current_date() - INTERVAL 30 DAY\r\n",
+        "GROUP BY Category;"
+      ]
+    },
+    {
+      "name": "18e1a64c",
+      "displayName": "Category Wise Spending and Transaction Summary",
+      "queryLines": [
+        "SELECT \r\n",
+        "  category,\r\n",
+        "  SUM(Amount) AS total_spend,\r\n",
+        "  COUNT(*) AS transactions\r\n",
+        "FROM workspace.default.financialssilver\r\n",
+        "GROUP BY category\r\n",
+        "ORDER BY total_spend DESC;"
+      ]
+    },
+    {
+      "name": "561e60fc",
+      "displayName": "Last Thirty Day Card Spend Analysis",
+      "queryLines": [
+        "SELECT Card,\r\n",
+        "       SUM(Amount) as total_spend\r\n",
+        "FROM workspace.default.financialssilver\r\n",
+        "WHERE Date >= current_date() - INTERVAL 30 DAY\r\n",
+        "GROUP BY Card;"
+      ]
+    },
+    {
+      "name": "7e9980c3",
+      "displayName": "Monthly Financial Summary by Year",
+      "queryLines": [
+        "SELECT\r\n",
+        "    MONTH(Date) AS MonthNumber,\r\n",
+        "    YEAR(Date) AS YearNumber,\r\n",
+        "    SUM(Amount) AS TotalValue\r\n",
+        "FROM\r\n",
+        "    workspace.default.financialssilver\r\n",
+        "GROUP BY\r\n",
+        "    MONTH(Date),\r\n",
+        "    YEAR(Date)\r\n",
+        "ORDER BY\r\n",
+        "    YearNumber,\r\n",
+        "    MonthNumber;"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "975235b8",
+      "displayName": "Untitled page",
+      "layout": [
+        {
+          "widget": {
+            "name": "c7bc9f23",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6a7641c2",
+                  "fields": [
+                    {
+                      "name": "sum(Amount)",
+                      "expression": "`sum(Amount)`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(Amount)",
+                  "displayName": "sum(Amount)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "7dcc7722",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "acaae497",
+                  "fields": [
+                    {
+                      "name": "sum(total_spend)",
+                      "expression": "SUM(`total_spend`)"
+                    },
+                    {
+                      "name": "Category",
+                      "expression": "`Category`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(total_spend)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Sum of total_spend"
+                },
+                "color": {
+                  "fieldName": "Category",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Category"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    }
+  }
+}
